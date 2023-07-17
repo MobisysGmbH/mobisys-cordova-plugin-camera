@@ -20,14 +20,13 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    id="cordova-plugin-camera"
-    version="6.0.1-dev">
+    id="@mobisys-internal/cordova-plugin-camera"
+    version="6.0.1">
     <name>Camera</name>
     <description>Cordova Camera Plugin</description>
     <license>Apache 2.0</license>
     <keywords>cordova,camera</keywords>
-    <repo>https://github.com/apache/cordova-plugin-camera</repo>
-    <issue>https://github.com/apache/cordova-plugin-camera/issues</issue>
+    <repo>https://github.com/MobisysGmbH/mobisys-cordova-plugin-camera</repo>
 
     <engines>
         <engine name="cordova" version=">=9.0.0"/>
