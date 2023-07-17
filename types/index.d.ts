@@ -1,5 +1,5 @@
 // Type definitions for Apache Cordova Camera plugin
-// Project: https://github.com/apache/cordova-plugin-camera
+// Project: https://github.com/MobisysGmbH/mobisys-cordova-plugin-camera
 // Definitions by: Microsoft Open Technologies Inc <http://msopentech.com>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // 
