@@ -14,7 +14,7 @@ extends:
   parameters:
     packageType: npm
     requireNvmrc: true
-    allowedPublishingBranches: refs/heads/master
+    allowedPublishingBranches: refs/heads/release
     linterSteps:
       - script: npm run lint
         displayName: Run Linter
