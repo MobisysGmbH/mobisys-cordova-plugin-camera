@@ -14,7 +14,15 @@ extends:
   parameters:
     packageType: npm
     requireNvmrc: true
+    targetFeed: mobisys-internal
     allowedPublishingBranches: refs/heads/release
+    prePublishSteps:
+      - task: CopyFiles@2
+        inputs:
+          Contents: 'mobisys-internal-cordova-plugin-camera-*.tgz'
+          TargetFolder: 'publish'
+          CleanTargetFolder: true
     linterSteps:
       - script: npm run lint
         displayName: Run Linter
+    artifactsDirectoryToPublish: $(Build.SourcesDirectory)/publish
