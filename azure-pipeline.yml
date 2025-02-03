@@ -4,7 +4,7 @@ resources:
       type: github
       name: MobisysGmbh/devops-templates
       endpoint: MobisysGmbH
-      ref: refs/heads/release/v7
+      ref: refs/heads/release/v8
 
 trigger: none
 pr: none
