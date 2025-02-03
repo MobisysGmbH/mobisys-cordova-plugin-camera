@@ -1,0 +1,20 @@
+resources:
+  repositories:
+    - repository: devops
+      type: github
+      name: MobisysGmbh/devops-templates
+      endpoint: MobisysGmbH
+      ref: refs/heads/release/v7
+
+trigger: none
+pr: none
+
+extends:
+  template: /yaml/kickstarter-templates/package-pipeline.yml@devops
+  parameters:
+    packageType: npm
+    requireNvmrc: true
+    allowedPublishingBranches: refs/heads/master
+    linterSteps:
+      - script: npm run lint
+        displayName: Run Linter

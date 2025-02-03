@@ -224,6 +224,37 @@ public class CameraLauncher extends CordovaPlugin implements MediaScannerConnect
     // LOCAL METHODS
     //--------------------------------------------------------------------------
 
+    private String[] getPermissions(boolean storageOnly, int mediaType) {
+        ArrayList<String> permissions = new ArrayList<>();
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android API 33 and higher
+            switch (mediaType) {
+                case PICTURE:
+                    permissions.add(Manifest.permission.READ_MEDIA_IMAGES);
+                    break;
+                case VIDEO:
+                    permissions.add(Manifest.permission.READ_MEDIA_VIDEO);
+                    break;
+                default:
+                    permissions.add(Manifest.permission.READ_MEDIA_IMAGES);
+                    permissions.add(Manifest.permission.READ_MEDIA_VIDEO);
+                    break;
+            }
+        } else {
+            // Android API 32 or lower
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        if (!storageOnly) {
+            // Add camera permission when not storage.
+            permissions.add(Manifest.permission.CAMERA);
+        }
+
+        return permissions.toArray(new String[0]);
+    }
+
     private String getTempDirectoryPath() {
         File cache = cordova.getActivity().getCacheDir();
         // Create the cache directory if it doesn't exist
@@ -246,7 +277,6 @@ public class CameraLauncher extends CordovaPlugin implements MediaScannerConnect
      * @param encodingType           Compression quality hint (0-100: 0=low quality & high compression, 100=compress of max quality)
      */
     public void callTakePicture(int returnType, int encodingType) throws IllegalStateException {
-
         // CB-10120: The CAMERA permission does not need to be requested unless it is declared
         // in AndroidManifest.xml. This plugin does not declare it, but others may and so we must
         // check the package info to determine if the permission is present.
@@ -331,7 +361,8 @@ public class CameraLauncher extends CordovaPlugin implements MediaScannerConnect
             }
             else
             {
-                LOG.d(LOG_TAG, "Error: You don't have a default camera.  Your device may not be CTS complaint.");
+                LOG.d(LOG_TAG, "Error: You don't have a default camera.  Your device may not be CTS compliant.");
+                this.failPicture("No camera available.");
             }
         }
     }
@@ -1220,6 +1251,37 @@ public class CameraLauncher extends CordovaPlugin implements MediaScannerConnect
     }
 
     /**
+     * Used to find out if we are in a situation where the Camera Intent adds to images
+     * to the content store. If we are using a FILE_URI and the number of images in the DB
+     * increases by 2 we have a duplicate, when using a DATA_URL the number is 1.
+     *
+     * @param type FILE_URI or DATA_URL
+     */
+    private void checkForDuplicateImage(int type) {
+        int diff = 1;
+        Uri contentStore = whichContentStore();
+        Cursor cursor = queryImgDB(contentStore);
+        int currentNumOfImages = cursor.getCount();
+
+        if (type == FILE_URI && this.saveToPhotoAlbum) {
+            diff = 2;
+        }
+
+        // delete the duplicate file if the difference is 2 for file URI or 1 for Data URL
+        if ((currentNumOfImages - numPics) == diff) {
+            cursor.moveToLast();
+            @SuppressLint("Range")
+            int id = Integer.valueOf(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media._ID)));
+            if (diff == 2) {
+                id--;
+            }
+            Uri uri = Uri.parse(contentStore + "/" + id);
+            this.cordova.getActivity().getContentResolver().delete(uri, null, null);
+            cursor.close();
+        }
+    }
+
+    /**
      * Determine if we are storing the images in internal or external storage
      *
      * @return Uri
@@ -1392,5 +1454,14 @@ public class CameraLauncher extends CordovaPlugin implements MediaScannerConnect
             buffer.write(dataChunk, 0, bytesRead);
         }
         return buffer.toByteArray();
+    }
+
+    private boolean hasPermissions(String[] permissions) {
+        for (String permission: permissions) {
+            if (!PermissionHelper.hasPermission(this, permission)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -1,18 +1,20 @@
 {
-  "name": "cordova-plugin-camera",
-  "version": "8.0.1-dev",
+  "name": "@mobisys-internal/cordova-plugin-camera",
+  "version": "8.0.0",
   "description": "Cordova Camera Plugin",
   "types": "./types/index.d.ts",
   "cordova": {
-    "id": "cordova-plugin-camera",
+    "id": "@mobisys-internal/cordova-plugin-camera",
     "platforms": [
       "android",
       "ios",
       "browser"
     ]
   },
-  "repository": "github:apache/cordova-plugin-camera",
-  "bugs": "https://github.com/apache/cordova-plugin-camera/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MobisysGmbH/mobisys-cordova-plugin-camera.git"
+  },
   "keywords": [
     "cordova",
     "camera",
