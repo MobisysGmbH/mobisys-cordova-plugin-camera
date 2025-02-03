@@ -42,6 +42,14 @@ It is also possible to install via repo url directly ( unstable )
 
     cordova plugin add https://github.com/MobisysGmbH/mobisys-cordova-plugin-camera.git
 
+## Branches
+
+We are using the following branches:
+
+- master -> This branch is used to sync with the master branch from the forked repo "apache/cordova-plugin-camera". __This branch should never contain any other commit then the one from the forked repo.__
+- deveop -> This is __our__ development branch. Use this to introduce new reviewed changes for the next version of __our__ plugin.
+- release -> This is __our__ release branch. This contains the last released version of __our__ plugin. You can only create and publish a new plugin version to __our__ registry via this branch.
+
 ## Plugin variables
 
 The plugin uses the `ANDROIDX_CORE_VERSION` variable to configure `androidx.core:core` dependency. This allows to avoid conflicts with other plugins that have the dependency hardcoded.
