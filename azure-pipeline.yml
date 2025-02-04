@@ -4,7 +4,7 @@ resources:
       type: github
       name: MobisysGmbh/devops-templates
       endpoint: MobisysGmbH
-      ref: refs/heads/release/v7
+      ref: refs/heads/release/v8
 
 trigger: none
 pr: none
@@ -14,7 +14,15 @@ extends:
   parameters:
     packageType: npm
     requireNvmrc: true
-    allowedPublishingBranches: refs/heads/master
+    targetFeed: mobisys-internal
+    allowedPublishingBranches: refs/heads/release
+    prePublishSteps:
+      - task: CopyFiles@2
+        inputs:
+          Contents: 'mobisys-internal-cordova-plugin-camera-*.tgz'
+          TargetFolder: 'publish'
+          CleanTargetFolder: true
     linterSteps:
       - script: npm run lint
         displayName: Run Linter
+    artifactsDirectoryToPublish: $(Build.SourcesDirectory)/publish
